@@ -1,9 +1,7 @@
 package latte.java.demo.grpc.helloworld;
 
-import io.grpc.Channel;
-import io.grpc.Grpc;
-import io.grpc.InsecureChannelCredentials;
-import io.grpc.ManagedChannel;
+import io.grpc.*;
+import latte.java.demo.grpc.helloworld.proto.GreeterGrpc;
 import latte.java.demo.grpc.helloworld.proto.HelloReply;
 import latte.java.demo.grpc.helloworld.proto.HelloRequest;
 import org.junit.jupiter.api.Test;
@@ -13,9 +11,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ClientTest {
+    private static final Logger logger = Logger.getLogger(ClientTest.class.getName());
     class HelloWorldClient {
-        private static final Logger logger = Logger.getLogger(ClientTest.class.getName());
-
+        
         private final GreeterGrpc.GreeterBlockingStub blockingStub;
 
         /**
@@ -47,24 +45,11 @@ public class ClientTest {
     }
 
     @Test
-    public void startGrpcClient() {
+    public void startGrpcClient() throws InterruptedException {
         String user = "world";
         // Access a service running on the local machine on port 50051
         String target = "localhost:50051";
-        // Allow passing in the user and target strings as command line arguments
-        if (args.length > 0) {
-            if ("--help".equals(args[0])) {
-                System.err.println("Usage: [name [target]]");
-                System.err.println("");
-                System.err.println("  name    The name you wish to be greeted by. Defaults to " + user);
-                System.err.println("  target  The server to connect to. Defaults to " + target);
-                System.exit(1);
-            }
-            user = args[0];
-        }
-        if (args.length > 1) {
-            target = args[1];
-        }
+        
 
         // Create a communication channel to the server, known as a Channel. Channels are thread-safe
         // and reusable. It is common to create channels at the beginning of your application and reuse
