@@ -8,20 +8,31 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.ResourceLeakDetector;
 import io.netty.util.ResourceLeakDetector.Level;
 
 public class Main {
-
   public static void main(String[] args) throws InterruptedException {
+//    System.setProperty("io.netty.loggerFactory", "io.netty.util.internal.logging.Slf4JLoggerFactory");
+    ResourceLeakDetector.setLevel(Level.PARANOID);
     EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     EventLoopGroup workerGroup = new NioEventLoopGroup();
-    ResourceLeakDetector.setLevel(Level.ADVANCED);
 
     try {
       ServerBootstrap b = new ServerBootstrap();
       b.group(bossGroup, workerGroup)
+          .handler(new LoggingHandler(LogLevel.DEBUG))
           .channel(NioServerSocketChannel.class)
+          .childHandler(new ChannelInitializer<SocketChannel>() {
+              @Override
+              public void initChannel(SocketChannel ch) throws Exception {
+                  // 添加日志处理器
+                  ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO));
+                  // 这里可以添加其他的ChannelHandler进行业务处理
+              }
+          })
           .childHandler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
