@@ -10,6 +10,7 @@
       <list>
         <option value="$PROJECT_DIR$/loadJar/pom.xml" />
         <option value="$PROJECT_DIR$/grpc/pom.xml" />
+        <option value="$PROJECT_DIR$/netty_server/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
